@@ -1,4 +1,5 @@
 const express = require('express')
+const db = require('./db')
 const { connectToDb, getDb } = require('./db')
 
 // init app & middleware
@@ -16,5 +17,18 @@ connectToDb((err) => {
 
 // routes
 app.get('/books', (req,res) => {
+    let books = []
+      
+    db.collection('books')
+    .find()
+    .sort({ author: 1 })
+    .forEach(book => books.push(book))
+    .then(() => {
+      res.status(200).json(books)
+    })
+    .catch(() => {
+      res.status(500).json({error: 'Could not fetch the documents'})
+    })
+
       res.json({messg: "welcome to the api"})
 })
